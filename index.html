@@ -21,27 +21,41 @@
     <script>
         // List of MP3 files stored on GitHub
         const songs = [
-    { name: "Gorillaz - Feel Good Inc. (Instrumental)", url: "https://raw.githubusercontent.com/cowphoria/music-player/main/Gorillaz%20-%20Feel%20Good%20Inc.%20(Instrumental).mp3" },
-    { name: "Song Number 1", url: "https://raw.githubusercontent.com/cowphoria/music-player/main/songnumber1.mp3" }
+            { name: "Gorillaz - Feel Good Inc. (Instrumental)", url: "https://raw.githubusercontent.com/cowphoria/music-player/main/Gorillaz%20-%20Feel%20Good%20Inc.%20(Instrumental).mp3" },
+            { name: "Song Number 1", url: "https://raw.githubusercontent.com/cowphoria/music-player/main/songnumber1.mp3" }
         ];
 
+        let currentIndex = 0;
+        const audioPlayer = document.getElementById("audioPlayer");
+        const songList = document.getElementById("songList");
 
         // Populate dropdown menu
-        const songList = document.getElementById("songList");
         songs.forEach((song, index) => {
             let option = document.createElement("option");
-            option.value = song.url;
+            option.value = index;
             option.textContent = song.name;
             songList.appendChild(option);
         });
 
         // Play selected song
         function playSong() {
-            const audioPlayer = document.getElementById("audioPlayer");
-            const selectedSong = songList.value;
-            audioPlayer.src = selectedSong;
+            currentIndex = parseInt(songList.value); // Get selected song index
+            audioPlayer.src = songs[currentIndex].url;
             audioPlayer.play();
         }
+
+        // Play next song when current song ends
+        audioPlayer.addEventListener("ended", () => {
+            currentIndex++;
+            if (currentIndex < songs.length) {
+                audioPlayer.src = songs[currentIndex].url;
+                audioPlayer.play();
+                songList.value = currentIndex; // Update dropdown selection
+            } else {
+                currentIndex = 0; // Loop back to first song
+                songList.value = currentIndex;
+            }
+        });
     </script>
 </body>
 </html>
